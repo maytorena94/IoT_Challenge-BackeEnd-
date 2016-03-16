@@ -1,1 +1,1 @@
-{"zona": [{"currentCars": 16, "id": "A", "carLimit": 20}, {"currentCars": 0, "id": "B", "carLimit": 40}]}
+[{"data": [{"currentCars": 9, "id": "A", "carLimit": 12}, {"currentCars": 5, "id": "B", "carLimit": 40}], "name": "estacionamiento1"}]

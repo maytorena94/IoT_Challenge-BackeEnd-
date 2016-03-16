@@ -20,17 +20,18 @@ car_ammount.write("Cars in Section:")
 car_ammount.setCursor(1,7)
 car_ammount.write(str(car_counter))
 
-car_limit = data["zona"][0]["carLimit"]
-car_counter = data["zona"][0]["currentCars"]
+car_limit = data[0]["data"][0]["carLimit"]
+car_counter = data[0]["data"][0]["currentCars"]
+data[0]["data"][1]["currentCars"] = 5
 
 while True:
     if car_enter.value()==1 and car_counter!=car_limit:
         car_counter+=1
-        data["zona"][0]["currentCars"]= car_counter
+        data[0]["data"][0]["currentCars"] = car_counter
         json.dump(data, open("db.json",'w'))
     elif car_exit.isPressed()==1 and car_counter!=0:
         car_counter-=1
-        data["zona"][0]["currentCars"]= car_counter
+        data[0]["data"][0]["currentCars"]= car_counter
         json.dump(data, open("db.json",'w'))
     if car_counter>=0 and car_counter<car_limit:
         full_indicator.off()
