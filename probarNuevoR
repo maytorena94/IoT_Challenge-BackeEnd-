@@ -1,0 +1,58 @@
+from time import sleep
+import pyupm_grove as grove
+import pyupm_i2clcd as lcd
+import pyupm_ttp223 as ttp223
+import json
+from firebase import firebase
+
+full_indicator = grove.GroveLed(5)
+car_ammount = lcd.Jhd1313m1(0, 0x3E, 0x62)
+car_ammount.setColor(255, 0, 0)
+car_enter = grove.GroveButton(2)
+car_exit = ttp223.TTP223(3)
+car_counter = 0
+car_limit = 0
+car_ammount.setCursor(0,0)
+car_ammount.write("Cars in Section:")
+car_ammount.setCursor(1,7)
+car_ammount.write(str(car_counter))
+
+estacionamiento = 'Estacionamiento1'
+zona = 'Zona0'
+
+firebase = firebase.FirebaseApplication('https://smartpark1.firebaseio.com', None)
+data = firebase.get(estacionamiento, None)
+
+id = data[zona]["id"]
+car_limit = data[zona]["carLimit"]
+car_counter = data[zona]["currentCars"]
+
+
+while True:
+    if car_enter.value()==1 and car_counter!=car_limit:
+        car_counter+=1
+	result = firebase.put(estacionamiento,zona,{"currentCars":car_counter,"carLimit":car_limit,"id":id})
+    if car_exit.isPressed()==1 and car_counter!=0:
+        car_counter-=1
+	result = firebase.put(estacionamiento,zona,{"currentCars":car_counter,"carLimit":car_limit,"id":id})
+    if car_counter>=0 and car_counter<car_limit:
+        full_indicator.off()
+        car_ammount.setCursor(0,0)
+        car_ammount.write("                ")
+        car_ammount.setCursor(0,0)
+        car_ammount.write("Cars in Section:")
+        car_ammount.setCursor(1,0)
+        car_ammount.write("                ")
+        car_ammount.setCursor(1,7)
+        car_ammount.write(str(car_counter))
+    if car_counter>=car_limit:
+        full_indicator.on()
+        car_ammount.setCursor(0,0)
+        car_ammount.write("                ")
+        car_ammount.setCursor(0,2)
+        car_ammount.write("Seccion Full")
+        car_ammount.setCursor(1,0)
+        car_ammount.write("                ")
+        car_ammount.setCursor(1,0)
+        car_ammount.write("!!!!!!!!!!!!!!!!")
+    sleep(.2)

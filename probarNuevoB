@@ -18,7 +18,7 @@ car_ammount.setCursor(1,7)
 car_ammount.write(str(car_counter))
 
 estacionamiento = 'Estacionamiento1'
-zona = 'ZonaA'
+zona = 'Zona1'
 
 firebase = firebase.FirebaseApplication('https://smartpark1.firebaseio.com', None)
 data = firebase.get(estacionamiento, None)
@@ -32,7 +32,7 @@ while True:
     if car_enter.value()==1 and car_counter!=car_limit:
         car_counter+=1
 	result = firebase.put(estacionamiento,zona,{"currentCars":car_counter,"carLimit":car_limit,"id":id})
-    elif car_exit.isPressed()==1 and car_counter!=0:
+    if car_exit.isPressed()==1 and car_counter!=0:
         car_counter-=1
 	result = firebase.put(estacionamiento,zona,{"currentCars":car_counter,"carLimit":car_limit,"id":id})
     if car_counter>=0 and car_counter<car_limit:
@@ -45,7 +45,7 @@ while True:
         car_ammount.write("                ")
         car_ammount.setCursor(1,7)
         car_ammount.write(str(car_counter))
-    elif car_counter>=car_limit:
+    if car_counter>=car_limit:
         full_indicator.on()
         car_ammount.setCursor(0,0)
         car_ammount.write("                ")
